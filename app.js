@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import fs from "fs";
 const __dirname = path.resolve();
 // console.log(__dirname);
 const app = express();
@@ -23,9 +24,29 @@ app.get("/register", (req, res) => {
   console.log("i got response from register");
   res.sendFile(__dirname + "/src/html/register.html");
 });
+const fileName = "userList.csv";
 app.post("/register", (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
+  const { name, email, password } = req.body;
+  const str = `${name},${email},${password}\n`;
+  console.log(str);
   console.log("i got response from register");
+
+  // create file and write data
+  // fs.writeFile(fileName, str, (error) => {
+  //   error ? console.log(error) : console.log("file has been written");
+  // }); it create only one data
+
+  fs.appendFile(fileName, str, (error) => {
+    error
+      ? res.send(error.message)
+      : //     : res.send(`<h1 class="alert alert-success text-center">
+
+        //   User has been created , you may Login now
+        // </h1>;`);
+        res.redirect("/");
+  });
+
   res.sendFile(__dirname + "/src/html/register.html");
 });
 // User login controller
