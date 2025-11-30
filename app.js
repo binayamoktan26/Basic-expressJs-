@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import fs from "fs";
+import { makeHtmlString } from "./src/fileMerger.js";
 const __dirname = path.resolve();
 // console.log(__dirname);
 const app = express();
@@ -15,7 +16,19 @@ app.use(express.urlencoded({ extended: true }));
 // home path controller
 app.get("/", (req, res) => {
   console.log("i got response from home");
-  res.sendFile(__dirname + "/src/html/index.html");
+
+  // read the text base file
+
+  fs.readFile(fileName, "utf8", (error, data) => {
+    if (error) {
+      console.log(error);
+      return res.sendFile(__dirname + "/src/html/index.html");
+    } else {
+      return res.send(makeHtmlString(data.split("\n")));
+    }
+  });
+
+  //
 });
 
 // User interface controller
@@ -52,7 +65,7 @@ app.post("/register", (req, res) => {
 // User login controller
 app.get("/login", (req, res) => {
   console.log("i got a response from login ");
-  res.sendFile(__dirname + "/src/html/login.html");
+  return res.sendFile(__dirname + "/src/html/login.html");
 });
 // app.get("/get-user", (req, res) => {
 //   res.json({
